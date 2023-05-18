@@ -11,15 +11,35 @@ namespace Infrastructure.Data
         {
             //input query --> _context.Product
             var query = inputQuery;
+
+            //Filter
             if(spec.Criteria != null)
             {
-                //spec.Criteria -> p => p.Id == id
+                //spec.Criteria -> p => p.Id == id Or filtering using brandId ....
                 query = query.Where(spec.Criteria); 
+            }
+
+            //Sorting
+            if(spec.OrderBy != null)
+            {
+                query = query.OrderBy(spec.OrderBy); 
+            }
+            if(spec.OrderByDescending != null)
+            {
+                query = query.OrderByDescending(spec.OrderByDescending); 
+            }
+
+            //Paging
+            if(spec.IsPagingEnable)
+            {
+                query = query.Skip(spec.Skip).Take(spec.Take);
             }
 
             query = spec.Includes.Aggregate(query , (current , include)=> current.Include(include));
 
             return query;
+
+            
         }
     }
 }

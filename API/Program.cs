@@ -29,6 +29,8 @@ app.UseSwaggerUI();
 //To Deal with images and other static files
 app.UseStaticFiles();
 
+app.UseCors("CorsPolicy");
+
 app.UseAuthorization();
 
 app.MapControllers();
