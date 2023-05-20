@@ -4,6 +4,7 @@ using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace API.Extensions
 {
@@ -15,7 +16,6 @@ namespace API.Extensions
             IConfiguration config)
         {
             services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
@@ -23,8 +23,16 @@ namespace API.Extensions
                 options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
             });
 
+            //IConnectionMultiplexer --> I use it to connect to Redis DB
+            services.AddSingleton<IConnectionMultiplexer>(c=>
+            {
+                var options = ConfigurationOptions.Parse(config.GetConnectionString("Redis"));
+                return ConnectionMultiplexer.Connect(options);
+            });
+
             services.AddScoped<IProductRepository,ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             //Handle the Validation errors

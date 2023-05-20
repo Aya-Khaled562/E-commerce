@@ -6,6 +6,7 @@ using Core.Entities;
 
 namespace API.Helpers
 {
+    //This class is responsible for Resolve image
     public class ProductUrlResolver : IValueResolver<Product, ProductToReturnDto, string>
     {
         private readonly IConfiguration _config;
